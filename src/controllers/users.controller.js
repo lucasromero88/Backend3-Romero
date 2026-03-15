@@ -21,10 +21,20 @@ const updateUser =async(req,res)=>{
     res.send({status:"success",message:"User updated"})
 }
 
+// const deleteUser = async(req,res) =>{
+//     const userId = req.params.uid;
+//     const result = await usersService.getUserById(userId);
+//     res.send({status:"success",message:"User deleted"})
+// }
+
 const deleteUser = async(req,res) =>{
     const userId = req.params.uid;
-    const result = await usersService.getUserById(userId);
-    res.send({status:"success",message:"User deleted"})
+    
+    const user = await usersService.getUserById(userId);
+    if(!user) return res.status(404).send({status:"error", error:"User not found"});
+
+    await usersService.delete(userId); 
+    res.send({status:"success", message:"User deleted"});
 }
 
 export default {

@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUiExpress from 'swagger-ui-express';
+
 import dotenv from 'dotenv'; 
 import connectDB from './config/db.js'; 
 
@@ -29,10 +32,31 @@ app.use('/api/sessions',sessionsRouter);
 
 app.use('/api/mocks', mocksRouter);
 
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'Documentación de AdoptMe API',
+            description: 'API para la gestión de adopción de mascotas, usuarios y mocks.'
+        },
+        servers: [
+            {
+                url: `http://localhost:${PORT}`,
+                description: "Servidor local"
+            }
+        ]
+    },
+    apis: [`./src/docs/**/*.yaml`] 
+};
+
+const specs = swaggerJSDoc(swaggerOptions);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
+
+
 // app.listen(PORT,()=>console.log(`Listening on ${PORT}`))
 
 const startServer = async () => {
-    await connectDB(); // Conectamos a Mongo usando tu configuración de db.js
+    await connectDB(); 
     app.listen(PORT, () => {
         console.log(`Servidor escuchando en el puerto ${PORT}`);
     });

@@ -1,0 +1,103 @@
+paths:
+  /api/users:
+    get:
+      summary: Obtiene todos los usuarios.
+      tags:
+        - Users
+      responses:
+        200:
+          description: Lista de usuarios obtenida con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  payload:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+  /api/users/{uid}:
+    get:
+      summary: Obtiene un usuario por ID.
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario a buscar.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Usuario encontrado.
+        404:
+          description: Usuario no encontrado.
+    put:
+      summary: Actualiza los datos de un usuario.
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        200:
+          description: Usuario actualizado con éxito.
+        404:
+          description: Usuario no encontrado.
+    delete:
+      summary: Elimina un usuario de la base de datos.
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Usuario eliminado con éxito.
+        404:
+          description: Usuario no encontrado.
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        pets:
+          type: array
+          items:
+            type: object
+    UserUpdate:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        role:
+          type: string
